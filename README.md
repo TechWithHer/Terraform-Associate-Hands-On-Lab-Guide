@@ -1,13 +1,19 @@
-# Terraform Associate (004) — Hands-On Lab Guide
+# Terraform Associate (004) — Hands-On Lab Guide 
+
+Happy to announce that I recently gave Hashicorp's Terraform Associate (004) Certification Exam and I cracked it. 
+
+If you have worked with Terraform, its pretty simple. If not, this guide can help you. 
 
 A complete, runnable set of exercises mapped to every objective on the **HashiCorp Certified: Terraform Associate (004)** exam. Designed for the last few days before the exam.
 
-> **Why these labs cost nothing:** Labs 1–12 use the `random`, `local`, `null`, `tls`, and `time` providers. They require **no cloud account and no credentials** but exercise every core Terraform mechanic the exam tests. Labs touching backends/HCP and the portfolio project use Docker (also free and local).
+> **Why these labs cost nothing:** 
+
+> Labs 1–12 use the `random`, `local`, `null`, `tls`, and `time` providers. They require **no cloud account and no credentials** but exercise every core Terraform mechanic the exam tests. Labs touching backends/HCP and the portfolio project use Docker (also free and local).
 
 ## How to use this guide
 
 1. Install Terraform (Lab 0).
-2. Work each lab in its own folder. Type the code by hand — do not copy-paste blindly; muscle memory matters for the exam.
+2. Work each lab in its own folder (examples and solutions given already). Type the code by hand — do not copy-paste blindly; muscle memory matters for the exam.
 3. For each lab, run the **commands**, read the **What to observe** notes, then read the **Exam tips** (these are the trap areas).
 4. The exam is ~57 multiple-choice/multiple-select questions in 60 minutes, provider-agnostic. It tests *understanding of Terraform itself*, not AWS/Azure specifics.
 
