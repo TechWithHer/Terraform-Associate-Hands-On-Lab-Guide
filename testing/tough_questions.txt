@@ -1,0 +1,262 @@
+What is the purpose of a Terraform data source?
+
+A. To create new infrastructure resources
+B. To retrieve and use existing information from outside Terraform state
+C. To store Terraform state remotely
+D. To define input variables dynamically
+
+Ans:
+
+✔️ Correct Answer: B
+✔️ Why B is correct:
+
+A Terraform data source is used to fetch existing information from external systems or already existing infrastructure without creating or managing it.
+
+Examples:
+
+latest AMI ID in AWS
+existing VPC details
+subnet IDs
+
+It is read-only access to external data.
+
+--------------------
+
+What does terraform taint do?
+
+A. Deletes a resource immediately
+B. Marks a resource for recreation on next apply
+C. Locks the state file
+D. Validates resource configuration
+
+
+✔️ Why B is correct:
+
+terraform taint marks a resource as “damaged” or needing replacement. On the next terraform apply, Terraform will:
+
+destroy the resource
+recreate it fresh
+
+This is useful when a resource is in a bad or inconsistent state.
+
+--------------
+
+How does Terraform determine resource dependencies?
+
+A. Based only on resource names
+B. Through explicit depends_on only
+C. Automatically using references between resources
+D. Random allocation during apply phase
+
+✔️ Why C is correct:
+
+Terraform builds a dependency graph automatically by analyzing references between resources.
+
+Example:
+
+subnet_id = aws_subnet.main.id
+
+This creates an implicit dependency — Terraform understands:
+
+subnet must be created before the dependent resource
+
+-----------------------
+
+🧪 Question 22 / 57 (Moderate Difficulty – Count vs For_Each)
+
+Which statement about count and for_each is TRUE?
+
+A. count can only create one resource at a time
+B. for_each requires a list and cannot use maps
+C. for_each tracks instances by key, making it more stable when items change
+D. count and for_each can be used together in the same resource block
+
+✔️ Why C is correct:
+
+for_each creates resource instances identified by keys, which makes resource addressing stable.
+
+Example:
+
+for_each = {
+  dev  = "t3.micro"
+  prod = "t3.large"
+}
+
+Resources become:
+
+aws_instance.server["dev"]
+aws_instance.server["prod"]
+
+If one key is removed, Terraform only affects that specific instance.
+
+Why this is preferred over count
+
+With count, resources are indexed:
+
+aws_instance.server[0]
+aws_instance.server[1]
+aws_instance.server[2]
+
+Removing the middle item can cause index shifting and unnecessary replacements.
+
+-------------------------
+
+🧪 Question 25 / 57 (Moderate–Hard: Terraform Workspaces)
+
+What is the primary purpose of Terraform workspaces?
+
+A. Run multiple Terraform commands simultaneously
+B. Manage multiple state files from the same configuration
+C. Create multiple providers in a configuration
+D. Share variables between modules
+
+✔️ Why B is correct:
+
+Terraform workspaces allow you to use the same configuration while maintaining separate state files.
+
+Common example:
+
+dev
+staging
+prod
+
+Each workspace has its own state, so resources in one workspace are isolated from the others.
+
+Commands often seen on the exam:
+
+terraform workspace list
+terraform workspace new dev
+terraform workspace select prod
+⚠️ Exam Tip
+
+HashiCorp generally recommends:
+
+Workspaces for simple environment separation
+Separate configurations/backends for larger production environments
+❌ Why others are wrong:
+A: Workspaces don't run commands concurrently
+C: Providers are independent of workspaces
+D: Variables and modules are unrelated to workspace functionality
+
+------------------------
+
+What is a Terraform provisioner mainly used for?
+
+A. Managing state files
+B. Executing scripts on a resource after creation
+C. Defining input variables
+D. Managing provider authentication
+
+
+Why B is correct:
+
+Provisioners are used to run local or remote scripts/commands after a resource is created or destroyed.
+
+Example:
+
+installing software on a VM after provisioning
+running configuration scripts
+
+Example snippet:
+
+provisioner "remote-exec" {
+  inline = ["sudo apt update", "sudo apt install nginx -y"]
+}
+⚠️ Exam Insight:
+
+Provisioners are considered a last resort in Terraform best practices.
+
+
+------------------
+
+What causes Terraform to replace a resource instead of updating it in-place?
+
+A. Only changes in tags
+B. Changes in immutable attributes
+C. Changes in output values
+D. Changes in state file comments
+
+
+✔️ Why B is correct:
+
+Terraform will replace (destroy + recreate) a resource when you change attributes that cannot be updated in-place.
+
+These are called immutable attributes, for example:
+
+instance type in some cases
+region/availability zone
+certain disk or network configurations
+resource names (for some providers/resources)
+
+When Terraform detects this, the plan shows:
+
+-/+ destroy and then create replacement
+
+---------------
+n a Terraform plan, what does the symbol ~ mean?
+
+A. Resource will be destroyed
+B. Resource will be created
+C. Resource will be updated in-place
+D. Resource will be ignored
+
+
+✔️ Why C is correct:
+
+In a Terraform plan:
+
+~ means in-place update
+
+Example:
+
+~ tags = {
+    Name = "old"
+  } -> {
+    Name = "new"
+  }
+
+So Terraform will modify the resource without destroying it.
+
+🔥 Quick symbol reference (exam gold):
++ → create
+- → destroy
+-/+ → replace (destroy + recreate)
+~ → update in-place
+
+
+------
+
+What is the purpose of terraform_remote_state data source?
+
+A. Encrypt state files automatically
+B. Access outputs from another Terraform state file
+C. Replace backend configuration
+D. Import infrastructure into state
+
+✔️ Why B is correct:
+
+terraform_remote_state is a data source used to read outputs from another Terraform state file.
+
+Common use case:
+
+VPC module in one state
+compute resources in another state
+
+Example:
+
+data "terraform_remote_state" "vpc" {
+  backend = "s3"
+  config = {
+    bucket = "my-tf-state"
+    key    = "vpc/terraform.tfstate"
+    region = "ap-southeast-1"
+  }
+}
+
+Then you can access:
+
+data.terraform_remote_state.vpc.outputs.vpc_id
+
+
+
+
